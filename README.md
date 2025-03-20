@@ -9,7 +9,7 @@ The original code is licensed under the **BSD 3-Clause License**, and all copyri
 
 Minor changes have been made:
 * LPIPS loss option has been added for training, see [training section](#training)
-* Demonstration notebooks for high resolution (HR) and very high resolution (VHR) image GenCP images have been added
+* Demonstration notebooks for high resolution (HR) and very high resolution (VHR) GenCP images have been added
 
 
 ## GenCP
