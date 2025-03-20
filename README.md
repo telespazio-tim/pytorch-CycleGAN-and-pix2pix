@@ -16,7 +16,7 @@ Minor changes have been made:
 
 
 ## GenCP
-he scope of this project is to develop a proof of concept prototype prototype aiming to provide Generated Control Point (GenCP) image chips which are computed with generative AI techniques. The Ground Control Points (GCP) are involved in geometric Calibration / Validation activities of remote sensing images and are reference measurements.
+The scope of this project is to develop a proof of concept prototype prototype aiming to provide Generated Control Point (GenCP) image chips which are computed with generative AI techniques. The Ground Control Points (GCP) are involved in geometric Calibration / Validation activities of remote sensing images and are reference measurements.
 
 The following picture illustrates the GenCP concept: image translation from map to synthetic satellite image
 
@@ -91,9 +91,9 @@ To generate your own OSM rasters, here are some guidelines:
 
 ## Training
 
-The script train.py allows to launch the training given certains parameters.
+Please refer to the original [README](#original-readme-from-cyclegan-and-pix2pix-in-pytorch) for guidelines on testing.
 
-For training on an aligned dataset, meaning a dataset that contains images pairs saved as 1 images, the following options and command can be used:
+For training on an aligned dataset, such as the HR dataset available in Zenodo, the following options and command can be used:
 
 * Use `--dataroot` to indicate path to training dataset
 * Use `--name` to name the experiment
@@ -103,6 +103,11 @@ For training on an aligned dataset, meaning a dataset that contains images pairs
 * Use `--lambda_L1` to change lambda value (with L1 or LPIPS loss)
 
 Set `--model` option to "pix2pix" to indicate that a Pix2Pix architecture is used.
+
+```
+   python train.py  --dataroot path/to/dataset  --name experiment_name --model pix2pix --LPIPS  --checkpoints_dir path/to/checkpoint_dir --direction BtoA
+   
+```
 
 All options to select parameters and hyperparameters values are described in the [options folder](options).
 
