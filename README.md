@@ -3,7 +3,182 @@
 
 <br><br><br>
 
-# CycleGAN and pix2pix in PyTorch
+# CycleGAN and pix2pix in PyTorch applied to GenCP: Generative Control Point
+
+GenCP is a project funded by ESA (European Space Agency) based on **CycleGAN and pix2pix in PyTorch**. 
+Please refer to the original [README](#original-readme-from-cyclegan-and-pix2pix-in-pytorch) for more information.
+
+The original code is licensed under the **BSD 3-Clause License**, and all copyright notices have been retained.
+
+Minor changes have been made:
+* LPIPS loss option has been added for training, see [training section](#training)
+* Demonstration notebooks for high resolution (HR) and very high resolution (VHR) image GenCP images have been added
+
+
+## GenCP
+he scope of this project is to develop a proof of concept prototype prototype aiming to provide Generated Control Point (GenCP) image chips which are computed with generative AI techniques. The Ground Control Points (GCP) are involved in geometric Calibration / Validation activities of remote sensing images and are reference measurements.
+
+The following picture illustrates the GenCP concept: image translation from map to synthetic satellite image
+
+<img src="gencp_imgs/gencp_concept.png" alt="Texte alternatif" width="400" height="150">
+
+
+Currently, there are two common approaches to get GCP set:
+*	Ground-based surveys, mostly using GNSS receivers with mm/cm level accuracy, that are suitable for manual labelling in images
+*	Extraction from reference raster datasets, often Sentinel-2 mosaics (S2 GRI) or any other VHR images, for which uncertainties are known, and that is suitable for automatic image matching procedures.
+
+In both cases, the reference points are provided to the user along with GCP image chips from an EO Sensor, including vector data and GNSS measurement (if available), or more straightforwardly a full raster reference data to sufficiently describe the point location. ESA is also aiming at the development and sharing of a comprehensive GCP DB, which requires clearly explained point locations together with accurate coordinates that need to be identified in the target image.
+
+However, although the provision of GCP image chips is an efficient approach for user interpretation of a GCP in a target image (labelling), the sharing / distribution among community of original VHR data remain a critical issue because of copyright law / licensing policy.
+
+Furthermore, even if some free ground photos or screenshots are available and so can be utilized as part of GCP description report, the photos or the views are not georeferenced, so GCP should be identified manually. As consequences, it limits considerably the usefulness of GCP data for geometric Cal/Val purposes.
+
+The last but not least critical point is related to reference image chip; radiometric and geometric differences still exist between reference and target images; it results in accuracy loss in matching process.
+
+In order to overcome these issues, an appropriate and ideal solution would be to generate synthetic GCP images, so called GenCP, with main purposes of using them as a geometric raster reference.
+
+In the scope of this project, two AI models have been developed to support two different resolutions:
+*	VHR with 50 cm images
+*	HR with 10 m images
+
+The following diagram illustrates the GenCP workflow:
+
+![concept](gencp_imgs/workflow.png)
+
+Note: image patches used for training and generated images are 8 bits images.
+
+
+### Examples of generated images
+
+TODO: add links to zenodo and QGISCloud if available
+
+Below are some examples of HR generated images along with the corresponding reference S2 patches and OSM rasters.
+
+OSM raster            |  Reference Image            |  Generated Image
+:-------------------------:|:-------------------------:|:-------------------------:
+![](gencp_imgs/32UPA_1584_00_real_A.png)  |  ![](gencp_imgs/32UPA_1584_00_real_B.png) |  ![](gencp_imgs/32UPA_1584_00_fake_B.png)
+![](gencp_imgs/34TCT_0766_00_real_A.png)  |  ![](gencp_imgs/34TCT_0766_00_real_B.png) |  ![](gencp_imgs/34TCT_0766_00_fake_B.png)
+![](gencp_imgs/31TFH_0022_00_real_A.png)  |  ![](gencp_imgs/31TFH_0022_00_real_B.png) |  ![](gencp_imgs/31TFH_0022_00_fake_B.png)
+![](gencp_imgs/31TGH_0155_00_real_A.png)  |  ![](gencp_imgs/31TGH_0155_00_real_B.png) |  ![](gencp_imgs/31TGH_0155_00_fake_B.png)
+![](gencp_imgs/31TGH_0216_00_real_A.png)  |  ![](gencp_imgs/31TGH_0216_00_real_B.png) |  ![](gencp_imgs/31TGH_0216_00_fake_B.png)
+
+VHR examples are illustrated below, from UAV images.
+
+OSM raster            |  Reference Image            |  Generated Image
+:-------------------------:|:-------------------------:|:-------------------------:
+![](gencp_imgs/images1_mask.png)  |  ![](gencp_imgs/images1_ref.png) |  ![](gencp_imgs/images1_preds.png)
+![](gencp_imgs/images13_mask.png)  |  ![](gencp_imgs/images13_ref.png) |  ![](gencp_imgs/images13_preds.png)
+![](gencp_imgs/images19_mask.png)  |  ![](gencp_imgs/images19_ref.png) |  ![](gencp_imgs/images19_preds.png)
+![](gencp_imgs/images20_mask.png)  |  ![](gencp_imgs/images20_ref.png) |  ![](gencp_imgs/images20_preds.png)
+![](gencp_imgs/images21_mask.png)  |  ![](gencp_imgs/images21_ref.png) |  ![](gencp_imgs/images21_preds.png)
+
+## Demo Notebooks
+
+Two notebooks are available to demonstrates how to generate synthetic [HR](GenCP_HR_demo/GenCP_demo_HR.ipynb) and [VHR](GenCP_VHR_demo/GenCP_demo_VHR.ipynb) images from OSM rasters. 
+
+Demonstration data is available for [HR](GenCP_HR_demo/data/dataset) and [VHR](GenCP_VHR_demo/gencp_VHR_data_test). The notebooks can also be used on users' OSM rasters. Please refer to the [data section](#data) to see guidelines on how to generate OSM rasters compatible with the models' weights provided.
+
+
+## Data
+
+For HR images, we provide a training dadaset of image pairs (S2 patches and correspond OSM rasters), avaible in [Zenodo]() (soon).
+
+To generate your own OSM rasters, here are some guidelines:
+* Use [osmnx library](https://osmnx.readthedocs.io/en/stable/getting-started.html) to download OSM vectors over your area of interest
+* Define OSM feature's color for the rasterization based on the colors used in this project. [HR colors](GenCP_HR_demo/genCP_HR_osm_colors.py) and [VHR colors and width](GenCP_VHR_demo/genCP_VHR_osm_colors_and_width.py) describe the OSM features used in the GenCP project and their assigned colors (and width) to create OSM rasters. Note: for HR case, [CLC 10m raster](https://land.copernicus.eu/en/products/clc-backbone/clc-backbone-2021) was used in addition to OSM to fill missing values in OSM rasters, colors used are also defined in [HR colors](GenCP_HR_demo/genCP_HR_osm_colors.py).
+* Use [GDAL](https://gdal.org/en/stable/programs/gdal_rasterize.html) to rasterize OSM vectors
+
+
+## Training
+
+The script train.py allows to launch the training given certains parameters.
+
+For training on an aligned dataset, meaning a dataset that contains images pairs saved as 1 images, the following options and command can be used:
+
+* Use `--dataroot` to indicate path to training dataset
+* Use `--name` to name the experiment
+* Use `--checkpoints_dir` to indicate path to checkpoints folder for saving model's weights
+* Use `--direction BtoA` to change input and output domain from B to A (A to B by default)
+* Use `--LPIPS` to replace L1 loss by LPIPS loss
+* Use `--lambda_L1` to change lambda value (with L1 or LPIPS loss)
+
+Set `--model` option to "pix2pix" to indicate that a Pix2Pix architecture is used.
+
+All options to select parameters and hyperparameters values are described in the [options folder](options).
+
+
+## Testing
+   
+Please refer to the original [README](#original-readme-from-cyclegan-and-pix2pix-in-pytorch) for guidelines on testing.
+
+For testing on source images only (map rasters) with the trained GenCP HR model, run the following command:
+
+* Set `--model` to "test" to indicate testing mode
+* Set `--dataset_mode` to "single" to indicate that only OSM rasters will be provided as inputs
+* Set `--norm` to "batch" to indicate that batch normalization has been used during training
+* Set `--netG` to "unet_256" to indicate that U-Net 256 was used as backbone for the generator during training
+
+```
+   python test.py  --dataroot path/to/dataset --name experiment_name --model test --results_dir /path/to/result_dir --checkpoints_dir path/to/checkpoint_dir --dataset_mode single --norm batch --netG unet_256
+   
+```
+
+
+## Geo-referencing
+
+Generated images by the AI model or not georeferenced. Use the following command to georeference generated images based on corresponding OSM rasters and create a GenCP database:
+
+```
+   python GenCP_HR_demo/gencp_georeferencing.py -t "path/to/generated/images" -i "path/to/input/OSM/rasters" -o "path/to/output/genCP_DB"
+   
+```
+
+## Quality Control
+
+Quality control is done with [KARIOS](https://github.com/telespazio-tim/karios) to evaluate the geometric accuracy of the geo-referenced generated images.
+
+### HR results
+
+The following figure illustrates geometric error distribution results obtained with KARIOS on a test site (not used for training) for RGB HR generated images. Results show a mean error around 0.7 pixel (7m) and a RMSE around 2.5 pixels (24m) due to outliers, mostly in rural areas.
+
+<img src="gencp_imgs/karios_HR.png" alt="Texte alternatif" width="600" height="500">
+
+The following configuration was used:
+
+Confidence value: 0.8
+
+KLT Matching:
+*	minDistance: 1
+*	blocksize: 5
+*	maxCorners: 0
+*	matching_winsize: 15
+*	quality_level: 0.1
+*	xStart: 0
+*	tile_size: 4000
+*	laplacian_kernel_size: 7
+*	outliers_filtering: true
+
+### VHR results
+
+The following figure illustrates geometric error distribution results obtained with KARIOS on a test site (not used for training) for RGB VHR generated images. Results show a mean error around 0.6 pixel and a RMSE around 3 pixels.
+
+<img src="gencp_imgs/karios_VHR.png" alt="Texte alternatif" width="600" height="500">
+
+The following configuration was used:
+
+KLT Matching:
+*	minDistance: 1
+*	blocksize: 25
+*	maxCorners: 2000000
+*	matching_winsize: 55
+*	quality_level: 0.1
+*	xStart: 0
+*	tile_size: 5000
+*  grid_step: 3
+*	laplacian_kernel_size: 7
+*	outliers_filtering: true
+
+# Original README from CycleGAN and pix2pix in PyTorch
 
 **New**:  Please check out [img2img-turbo](https://github.com/GaParmar/img2img-turbo) repo that includes both pix2pix-turbo and CycleGAN-Turbo. Our new one-step image-to-image translation methods can support both paired and unpaired training and produce better results by leveraging the pre-trained StableDiffusion-Turbo model. The inference time for 512x512 image is 0.29 sec on A6000 and 0.11 sec on A100.
 
