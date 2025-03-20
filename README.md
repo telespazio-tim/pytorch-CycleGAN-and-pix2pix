@@ -1,7 +1,4 @@
 
-<img src='imgs/horse2zebra.gif' align="right" width=384>
-
-<br><br><br>
 
 # CycleGAN and pix2pix in PyTorch applied to GenCP: Generative Control Point
 
@@ -91,7 +88,7 @@ To generate your own OSM rasters, here are some guidelines:
 
 ## Training
 
-Please refer to the original [README](#original-readme-from-cyclegan-and-pix2pix-in-pytorch) for guidelines on testing.
+Please refer to the original [README](#original-readme-from-cyclegan-and-pix2pix-in-pytorch) for guidelines on training.
 
 For training on an aligned dataset, such as the HR dataset available in Zenodo, the following options and command can be used:
 
