@@ -1,6 +1,6 @@
 
 
-# CycleGAN and pix2pix in PyTorch applied to GenCP: Generative Control Point
+# CycleGAN and pix2pix in PyTorch for GenCP: Generative Control Point
 
 GenCP is a project funded by ESA (European Space Agency) based on **CycleGAN and pix2pix in PyTorch**. 
 Please refer to the original [README](#original-readme-from-cyclegan-and-pix2pix-in-pytorch) for more information.
