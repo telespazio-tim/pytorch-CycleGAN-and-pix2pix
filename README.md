@@ -47,8 +47,6 @@ Note: image patches used for training and generated images are 8 bits images.
 
 ### Examples of generated images
 
-TODO: add links to zenodo and QGISCloud if available
-
 Below are some examples of HR generated images along with the corresponding reference S2 patches and OSM rasters.
 
 OSM raster            |  Reference Image            |  Generated Image
