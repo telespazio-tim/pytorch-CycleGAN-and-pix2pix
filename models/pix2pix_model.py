@@ -1,3 +1,14 @@
+# This file is part of the pytorch-CycleGAN-and-pix2pix project:
+# https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
+#
+# Copyright (c) 2017, Jun-Yan Zhu and Taesung Park
+# All rights reserved.
+#
+# This source code is licensed under the BSD 3-Clause License
+# found in the LICENSE file in the root directory of this source tree.
+#
+# Modifications made by telespazio-tim on 21/03/2025.
+
 import itertools
 import torch
 from .base_model import BaseModel
